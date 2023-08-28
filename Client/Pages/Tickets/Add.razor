@@ -1,0 +1,57 @@
+﻿@page "/tickets/add/{VmId:int}/{CustId:int}"
+@using global::Shared.VirtualMachines
+@attribute [Authorize(Roles = "Viewer")]
+
+<div style="margin: 2rem;" class="form">
+
+    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" @onsubmit="@CreateTicketAsync">
+        <div class="e-40rem">
+            <MudTextField @bind-Value="ticket.Title" HelperText="Geef Titel in" Label="Titel" Variant="Variant.Text" Required RequiredError="Het is verplicht een titel in te geven!"></MudTextField>
+        </div>
+
+        <MudTextField T="string" Label="Beschrijving" Variant="Variant.Outlined" @bind-Value="ticket.Description" Lines="30" Required RequiredError="Het is verplicht om een beschrijving in te geven!" />
+
+        <MudChipSet @bind-SelectedChip="selected" Filter="true" Mandatory="true">
+            <MudChip Text="MINOR" Default="true" Color="Color.Success">Minor</MudChip>
+            <MudChip Text="MAJOR" Color="Color.Warning">Major</MudChip>
+            <MudChip Text="CRITICAL" Color="Color.Error">Critical</MudChip>
+        </MudChipSet>
+    </MudForm>
+
+    <!--Buttons-->
+    @if (!_isRequestingCancel)
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton @onclick="CreateTicketAsync" ButtonType="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Ticket aanmaken</MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Cancel
+            </MudButton>
+        </div>
+
+    }
+    else
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Terug
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="Reset"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Bent u zeker?
+            </MudButton>
+        </div>
+    }
+
+</div>
+

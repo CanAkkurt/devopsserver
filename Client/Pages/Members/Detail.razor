@@ -1,0 +1,184 @@
+﻿@using global::Shared.Members;
+@page "/members/{id:int}"
+@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin,Viewer,Manager")]
+
+@if (member == null)
+{
+    <div class="row m-2 header">
+        <div class="heading-container">
+            <MudText Typo="Typo.h3">VIC-lid: detail</MudText>
+            <MudText Typo="Typo.subtitle1">Loading...</MudText>
+        </div>
+        <div>
+            <!--possibly put something on the right side?-->
+        </div>
+    </div>
+    <div class="loading-indicator-container">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+    </div>
+}
+else
+{
+    <div class="row m-2 header">
+        <div class="heading-container">
+            <div class="row">
+                <MudText Typo="Typo.h3">VIC-lid: @(member.Name) - Detail</MudText>
+                <div class="chip-container">
+                    @if (member.Active == true)
+                    {
+                        <MudTooltip Text="Dit lid is actief">
+                            <MudChip Size="Size.Small" Class="activity-chip">Actief</MudChip>
+                        </MudTooltip>
+                    }
+                    else
+                    {
+                        <MudTooltip Text="Dit lid is niet actief">
+                            <MudChip Size="Size.Small" Class="activity-chip">Inactief</MudChip>
+                        </MudTooltip>
+                    }
+                </div>
+            </div>
+        </div>
+        <div>
+            <!--possibly put something on the right side?-->
+        </div>
+    </div>
+    <div class="row">
+        <MudCard Style="margin-left: 2rem;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">@(member.Name) - gegevens</MudText>
+            </MudCardHeader>
+            <MudCardContent Style="padding-top: 0;">
+                <div class="row" style="flex-wrap: wrap;">
+                    <div class="row">
+                        <div class="col" style="max-width: 15rem;margin-right: 1rem;">
+                            <MudText Typo="Typo.subtitle1"><b>Email</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>TelefoonNummer</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>Departement</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>Rol</b></MudText>
+                        </div>
+                        <div class="col" style="padding-right: 1rem;">
+                            <MudText Typo="Typo.subtitle1">@member.Email</MudText>
+                            <MudText Typo="Typo.subtitle1">@member.PhoneNumber</MudText>
+                            <MudText Typo="Typo.subtitle1">@member.Department</MudText>
+                            <MudText Typo="Typo.subtitle1">@member.Role</MudText>
+                        </div>
+                    </div>
+                </div>
+            </MudCardContent>
+        </MudCard>
+        <MudSpacer />
+    </div>
+    <div class="row">
+        <MudCard Style="margin-left: 2rem; margin-top: 2rem; margin-right: 2rem;">
+            @if (virtualMachines == null)
+            {
+                <MudCardContent>
+                    <MudText>Dit lid is voor geen enkele VM verantwoordelijk.</MudText>
+                </MudCardContent>
+            }
+            else
+            {
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudTooltip>
+                            <ChildContent>
+                                <div class="d-flex">
+                                    <MudText Style="display: flex; align-content: center" Typo="Typo.h6" Class="mt-1">
+                                        <MudBadge Style="height: 1.5rem; padding-top: 0.25rem; margin-right: 0.25rem;" Content="@virtualMachines.Count()" Color="Color.Primary" Overlap="true" Class="d-flex ml-auto">
+                                            <MudIcon Icon="@Icons.Filled.Computer" Color="Color.Default" />
+                                        </MudBadge>
+                                        Virtuele machines
+                                    </MudText>
+                                </div>
+                            </ChildContent>
+                            <TooltipContent>
+                                <MudText>@(member.Name) is verantwoordelijk voor deze VMs.</MudText>
+                            </TooltipContent>
+                        </MudTooltip>
+                    </TitleContent>
+                    <ChildContent>
+                        @foreach (var vm in virtualMachines)
+                        {
+                            <MudCard Style="margin-bottom: 0.5rem;">
+                                <MudCardContent Style="padding-bottom: 0;">
+                                    <div class="row">
+                                        <MudText Typo="Typo.h6">@vm.Name</MudText>
+                                        @if (DateTime.Compare(vm.StartDate, DateTime.Now) <= 0 && DateTime.Compare(vm.EndDate, DateTime.Now) > 0)
+                                        {
+                                            <MudTooltip>
+                                                <ChildContent>
+                                                    <MudChip Size="Size.Small" Class="activity-chip">Actief</MudChip>
+                                                </ChildContent>
+                                                <TooltipContent>
+                                                    <MudText>Deze VM is actief.</MudText>
+                                                    <MudText>Startdatum: @(vm.StartDate.ToString("dd/MM/yyyy"))</MudText>
+                                                        <MudText>Einddatum: @(vm.EndDate.ToString("dd/MM/yyyy"))</MudText>
+                                                    </TooltipContent>
+                                                </MudTooltip>
+                                        }
+                                        else
+                                        {
+                                            <MudTooltip>
+                                                <ChildContent>
+                                                    <MudChip Size="Size.Small" Class="activity-chip">Inactief</MudChip>
+                                                </ChildContent>
+                                                <TooltipContent>
+                                                    <MudText>Deze VM is inactief.</MudText>
+                                                    <MudText>Startdatum: @(vm.StartDate.ToString("dd/MM/yyyy"))</MudText>
+                                                    <MudText>Einddatum: @(vm.EndDate.ToString("dd/MM/yyyy"))</MudText>
+                                                </TooltipContent>
+                                            </MudTooltip>
+                                        }
+                                        <MudSpacer />
+                                    </div>
+                                    <div class="row">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding-right: 1rem;"><MudText Typo="Typo.body2"><b>#vCPU: </b>@(vm.VCPUamount)</MudText></td>
+                                                        <td style="padding-right: 1rem;"><MudText Typo="Typo.body2"><b>Geheugen: </b>@(vm.MemoryAmount)GB</MudText></td>
+                                                    <td><MudText Typo="Typo.body2"><b>Opslag: </b>@(vm.StorageAmount)GB</MudText></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </MudCardContent>
+                                <MudCardActions Style="padding-bottom: 0; padding-top: 0;">
+                                    <MudButton @onclick="() => NavigateToVMDetail(vm.Id)" Variant="Variant.Text" Color="Color.Primary">Detail</MudButton>
+                                </MudCardActions>
+                            </MudCard>
+                        }
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudCard>
+    </div>
+}
+
+<!--Only an Admin can update/delete a member-->
+<AuthorizeView Roles="Admin">
+    @if (!_isRequestingCancel)
+    {
+        <div style="margin-top: 1rem; margin-left: 2rem; margin-bottom: 1rem;">
+            <MudButton Variant="Variant.Filled" @onclick="NavigateToEdit" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Info">
+                Wijzig Lid
+            </MudButton>
+            <MudButton Style="margin-left: 1rem;" Variant="Variant.Filled" @onclick="ChangeCancel" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Error">
+                Verwijder Lid
+            </MudButton>
+        </div>
+    }
+    else
+    {
+        <div style="margin-top: 1rem; margin-left: 2rem; margin-bottom: 1rem;">
+            <MudButton Variant="Variant.Filled" @onclick="ChangeCancel" Size="Size.Medium" Color="Color.Info">
+                Neen ik wil niet cancelen
+            </MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="DeleteUserAsync" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Error">
+                Bent u zeker?
+            </MudButton>
+        </div>
+    }
+</AuthorizeView>

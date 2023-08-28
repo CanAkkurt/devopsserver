@@ -1,0 +1,36 @@
+@using global::Shared.VirtualMachines;
+@using Microsoft; 
+@page "/virtualmachines"
+@attribute [Authorize]
+
+
+@if(_vms is null)
+{
+    <p>Loading...</p>
+} else
+{
+
+    <MudDataGrid T="VirtualMachineDto.Detail" Items="@_vms" SortMode="SortMode.Multiple" Hover="true" Filterable="true" QuickFilter="@_quickFilter"
+        Hideable="true" RowClick="@RowClicked">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Virtual Machines</MudText>
+            <MudSpacer />
+            <MudTextField id="vm-search" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <Columns>
+            <Column id="vm-item" T="VirtualMachineDto.Index" Field="Name" Title="Naam" />
+            <!--<Column T="VirtualMachineDto.Index" Field="Customer" title="Customer" />-->
+            <Column T="VirtualMachineDto.Index" Field="State" Title="Status" />
+            <Column T="VirtualMachineDto.Index" Field="MemoryAmount" Title="RAM (GB)" />
+            <Column T="VirtualMachineDto.Index" Field="StorageAmount" Title="Opslag (GB)" />
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="VirtualMachineDto.Index" />
+        </PagerContent>
+    </MudDataGrid>
+    <AuthorizeView Roles="Manager">
+        <MudFab Class="floating-button" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@onAdd" />
+    </AuthorizeView>
+
+}

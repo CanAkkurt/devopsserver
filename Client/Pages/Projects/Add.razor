@@ -1,0 +1,75 @@
+﻿@page "/projects/add"
+@attribute [Authorize(Roles = "Manager")]
+
+<main>
+    <MudText Typo="Typo.h3">Project toevoegen</MudText>
+    <div class="row">
+        <MudForm Style="flex-grow: 1; max-width: calc(30rem + 2*1rem);" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudCard>
+                <MudCardHeader Style="padding-bottom: 0;">
+                    <div class="row">
+                        <MudText Typo="Typo.h5">Gegevens nieuw project</MudText>
+                        <MudSpacer />
+                    </div>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div style="margin-top: -1rem;" class="field-container mw-30">
+                        <MudTextField T="string" Label="Naam project" @bind-Value="@newProject.Name" Required="true" RequiredError="De naam van een project is verplicht!" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30" style="margin-top: 0.5rem;">
+                        <MudSelect T="CustomerDto.Index" Label="BackupContact" MultiSelection="false" @bind-Value="customer"
+                                   Required="true" RequiredError="Er moet een klant gelinkt zijn aan het project!" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var c in customers)
+                            {
+                                <MudSelectItem T="CustomerDto.Index" Value="c" />
+                            }
+                        </MudSelect>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudForm>
+        <!--<MudSpacer/>-->
+    </div>
+
+    <!--Buttons-->
+    @if (!_isRequestingCancel)
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="CreateCustomerAsync"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Save
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   StartIcon="@Icons.Filled.Redo"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Cancel
+            </MudButton>
+        </div>
+    }
+    else
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Neen ik wil niet cancelen
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="Reset"
+                   StartIcon="@Icons.Filled.Redo"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Bent u zeker?
+            </MudButton>
+        </div>
+    }
+</main>
+
+

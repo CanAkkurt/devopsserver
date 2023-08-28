@@ -1,0 +1,27 @@
+@using global::Shared.Customers;
+@page "/customers"
+
+
+<MudDataGrid T="CustomerDto.Index" Items="@_customers" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter" 
+    Hideable="true" RowClick="@RowClicked">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Klanten</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <Column T="CustomerDto.Index" Field="Name" Title="Naam" />
+        <Column T="CustomerDto.Index" Field="Email" title="E-mail" />
+        <Column T="CustomerDto.Index" Field="PhoneNumber" title="Gsm" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="CustomerDto.Index" />
+    </PagerContent>
+</MudDataGrid>
+<AuthorizeView Roles="Admin,Manager">
+	<MudFab Class="floating-button" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@OnAdd" />
+</AuthorizeView>
+
+
+

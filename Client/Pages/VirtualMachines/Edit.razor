@@ -1,0 +1,171 @@
+﻿@page "/virtualmachines/edit/{id:int}"
+@attribute [Authorize]
+@attribute [Authorize(Roles = "Manager")]
+<main>
+    <MudText Typo="Typo.h3">Virtuele machine wijzigen</MudText>
+    <MudForm @ref="form" @bind-IsValid="@_success" @bind-Errors="@errors">
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudCard Style="margin-top: 1rem; max-width: calc(30rem + 2*16px);">
+                    <MudExpansionPanel IsExpanded="true">
+                        <TitleContent>
+                            <div class="d-flex">
+                                <MudIcon Style="margin-top: 0.375rem; margin-right: 0.25rem;" Icon="@Icons.Filled.Computer" Color="Color.Default" />
+                                <MudText Typo="Typo.h5">Gegevens VM</MudText>
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <div style="margin-top: -1rem;" class="field-container mw-30">
+                                <MudTextField T="string" Label="Naam virtuele machine" @bind-Value="@vmToUpdate.Name" Required="true" RequiredError="De naam van een vm is verplicht!" />
+                                <MudSpacer />
+                            </div>
+                            <div class="field-container mw-30">
+                                <MudTextField T="string" Label="Hostname" @bind-Value="@vmToUpdate.Hostname" Required="true" RequiredError="De hostname is verplicht!" />
+                                <MudSpacer />
+                            </div>
+                            <div class="field-container mw-30">
+                                <MudTextField T="string" Label="FQDN" @bind-Value="@vmToUpdate.FQDN" />
+                                <MudSpacer />
+                            </div>
+                            <div class="field-container mw-30">
+                                <MudTextField T="string" Label="Hoe vaak wilt u backups" @bind-Value="@vmToUpdate.BackupFrequency" Required="true" RequiredError="Je moet het aantal backups per week opgeven." />
+                                <MudSpacer />
+                            </div>
+                            <div class="field-container mw-30">
+                                <MudTextField T="string" Label="Wanneer moet de vm beschikbaar zijn" @bind-Value="@vmToUpdate.Availability" />
+                                <MudSpacer />
+                            </div>
+                            <div class="field-container mw-30" style="margin-top: 0.5rem;">
+                                <MudSelect T="MemberDto.Index" Label="Creator" MultiSelection="false" @bind-Value="vmToUpdate.Creator" Required="true" RequiredError="Er moet een moderator gelinkt zijn aan de vm!" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var m in members)
+                                    {
+                                        <MudSelectItem T="MemberDto.Index" Value="m" />
+                                    }
+                                </MudSelect>
+                            </div>
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudCard>
+
+                <MudCard Style="margin-top: 2rem; max-width: calc(25rem + 2*16px)">
+                    <MudExpansionPanel IsExpanded="true">
+                        <TitleContent>
+                            <div class="d-flex">
+                                <MudIcon Style="margin-top: 0.375rem; margin-right: 0.25rem;" Icon="@Icons.Filled.AssignmentInd" Color="Color.Default" />
+                                <MudText Typo="Typo.h5">Gegevens aanvraag</MudText>
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudSelect T="CustomerDto.Index"
+                                       Label="Klant"
+                                       MultiSelection="false"
+                                       @bind-Value="@vmToUpdate.Customer"
+                                       Required="true"
+                                       RequiredError="Er moet een klant toegekend zijn aan de vm!"
+                                       Variant="Variant.Outlined"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var c in customers)
+                                {
+                                    <MudSelectItem T="CustomerDto.Index" Value="c" />
+                                }
+                            </MudSelect>
+                            <MudSelect Style="margin-top: 0.5rem;"
+                                       T="ProjectDto.Index"
+                                       Label="Project"
+                                       MultiSelection="false"
+                                       @bind-Value="@vmToUpdate.Project"
+                                       Required="true"
+                                       RequiredError="Er moet een project gelinkt zijn aan de vm!"
+                                       Variant="Variant.Outlined"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var p in projects)
+                                {
+                                    <MudSelectItem T="ProjectDto.Index" Value="p" />
+                                }
+                            </MudSelect>
+                            <div class="field-container mw-15">
+                                <MudDatePicker Label="Startdatum contract met klant" @bind-Date="startDate" Required="true" RequiredError="De startdatum is verplicht!" Editable="true" Placeholder="Select Date" />
+                            </div>
+                            <div class="field-container mw-15">
+                                <MudDatePicker Label="Einddatum contract met klant" @bind-Date="endDate" Required="true" RequiredError="De einddatum is verplicht!" Editable="true" Placeholder="Select Date" />
+                            </div>
+                            <MudSwitch Label="Hoge beschikbaarheid" @bind-Checked="@vmToUpdate.HighAvailability" Required="true" RequiredError="De beschikbaarheidsgraad moet ingevuld zijn!" Color="Color.Primary" />
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudCard>
+                <MudCard Style="margin-top: 2rem; max-width: calc(25rem + 2*16px)">
+                    <MudExpansionPanel IsExpanded="true">
+                        <TitleContent>
+                            <div class="d-flex">
+                                <MudIcon Style="margin-top: 0.375rem; margin-right: 0.25rem;" Icon="@Icons.Filled.More" Color="Color.Default" />
+                                <MudText Typo="Typo.h5">Extra gegevens</MudText>
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudTextField T="string" Label="Fysieke server" @bind-Value="@vmToUpdate.FysiekeServer" Required="true" RequiredError="Je moet de fysieke server opgeven." />
+                            <MudTextField T="string" Label="Relatie met de klant" @bind-Value="@vmToUpdate.RelationCustomerDescription" />
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudCard>
+            </MudItem>
+
+            <MudItem Style="margin-top: 1rem;">
+                <MudCard>
+                    <MudCardContent>
+                        <MudSelect T="String" Label="Modus" @bind-Value="@vmToUpdate.Modus" Required="true" RequiredError="De modus is verplicht!" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem T="String" Value=Domain.Modus.IAAS.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Modus.SAAS.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Modus.PAAS.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Modus.Sjabloon1.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Modus.Sjabloon2.ToString() />
+                        </MudSelect>
+
+                        <MudNumericField Label="Aantal vCPU" @bind-Value="@vmToUpdate.VCPUamount" Required="true" RequiredError="Het aantal cpu's is verplicht!" />
+                        <MudNumericField Label="RAM (GB)" @bind-Value="@vmToUpdate.MemoryAmount" Required="true" RequiredError="De hoeveelheid RAM geheugen is verplicht!" />
+                        <MudNumericField Label="Storage (GB)" @bind-Value="@vmToUpdate.StorageAmount" Required="true" RequiredError="De hoeveelheid geheugen (GB) is verplicht!" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
+
+    <!--Buttons-->
+    @if (!_isRequestingCancel)
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="UpdateVirtualMachineAsync"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Save
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Cancel
+            </MudButton>
+        </div>
+
+    }
+    else
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Neen ik wil niet cancelen
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="Reset"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Bent u zeker?
+            </MudButton>
+        </div>
+    }
+</main>

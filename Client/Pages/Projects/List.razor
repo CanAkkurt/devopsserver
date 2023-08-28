@@ -1,0 +1,36 @@
+﻿@using global::Shared.Projects;
+@page "/projects"
+@attribute [Authorize]
+
+<MudDataGrid T="ProjectDto.Index" Items="@_projects" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
+             Hideable="true" RowClick="@RowClicked">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Projecten</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <Column T="ProjectDto.Index" Field="Name" Title="Naam"/>
+        <Column T="ProjectDto.Index" Field="CustomerName" Title="Naam klant"/>
+        <Column T="ProjectDto.Index" Field="VmAmount" Title="Tot. #VMs" />
+        <Column T="ProjectDto.Index" Field="TotalCPUs" Title="Tot. #vCPUs" />
+        <Column T="ProjectDto.Index" Field="TotalMemory" Title="Tot. geheugen(GB)" />
+        <Column T="ProjectDto.Index" Field="TotalStorage" Title="Tot. opslag(GB)" />
+        <Column T="ProjectDto.Index" Field="StartDate" Title="Startdatum" />
+        <Column T="ProjectDto.Index" Field="EndDate" Title="Einddatum" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="ProjectDto.Index" />
+    </PagerContent>
+</MudDataGrid>
+
+<AuthorizeView Roles="Manager">
+    <MudFab Class="floating-button" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@OnAdd" />
+</AuthorizeView>
+
+
+
+
+
+

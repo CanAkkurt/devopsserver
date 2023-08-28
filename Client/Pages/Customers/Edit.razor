@@ -1,0 +1,101 @@
+﻿@page "/customers/edit/{id:int}"
+@attribute [Authorize]
+<!--(Roles = "Manager")-->
+<main style="margin: 2rem;">
+    <MudText Typo="Typo.h3">Klant wijzigen</MudText>
+    <div class="row">
+        <MudForm Style="flex-grow: 1; max-width: calc(30rem + 2*1rem);" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudCard>
+                <MudCardHeader Style="padding-bottom: 0;">
+                    <div class="row">
+                        <MudText Typo="Typo.h5">Gegevens Klant</MudText>
+                        <MudSpacer />
+                    </div>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div style="margin-top: -1rem;" class="field-container mw-30">
+                        <MudTextField T="string" Label="Naam klant" @bind-Value="@customerToUpdate.Name" Required="true" RequiredError="De naam van een klant is verplicht!" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudTextField T="string" Label="Email" @bind-Value="@customerToUpdate.Email" Required="true" RequiredError="De email is verplicht!" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudTextField T="string" Label="Telefoonnummer" @bind-Value="@customerToUpdate.PhoneNumber" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudTextField T="string" Label="Extern-type" @bind-Value="@customerToUpdate.ExternType" Required="true" RequiredError="Je moet het externtype opgeven." />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudTextField T="string" Label="Opleiding" @bind-Value="@customerToUpdate.Education" Required="true" RequiredError="Je moet de opleiding ingeven." />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30" style="margin-top: 0.5rem;">
+                        <MudSelect T="String" Label="Departement" MultiSelection="false" @bind-Value="@customerToUpdate.Department" Required="true" RequiredError="Er moet een departement geslecteerd zijn." Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem T="String" Value=Domain.Department.DBO.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DBT.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DOG.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DIT.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DSA.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DGZ.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DLO.ToString() />
+                            <MudSelectItem T="String" value="Extern" />
+                        </MudSelect>
+                    </div>
+                    <div class="field-container mw-30" style="margin-top: 0.5rem;">
+                        <MudSelect T="CustomerDto.Index" Label="BackupContact" MultiSelection="false" @bind-Value="backupContact"
+                                   Required="true" RequiredError="Er moet een backup contactpersoon gelinkt zijn aan de klant!" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var c in customersForBackupContact)
+                            {
+                                <MudSelectItem T="CustomerDto.Index" Value="c" />
+                            }
+                        </MudSelect>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudForm>
+        <!--<MudSpacer/>-->
+    </div>
+
+    <!--Buttons-->
+    @if (!_isRequestingCancel)
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="UpdateCustomerAsync"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Save
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Cancel
+            </MudButton>
+        </div>
+    }
+    else
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Neen ik wil niet cancelen
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="Reset"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Bent u zeker?
+            </MudButton>
+        </div>
+    }
+</main>

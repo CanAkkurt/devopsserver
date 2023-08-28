@@ -1,0 +1,69 @@
+﻿.row{
+    display: flex;
+    justify-content: space-between;
+}
+.heading-container, .main{
+    display: flex;
+    flex-direction: column;
+}
+.button-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: column; 
+    padding-left: 2rem;
+}
+.statitem{
+    padding-left: 2rem;
+    padding-right: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+.statitem:first-of-type{
+    padding-left: 4rem;
+}
+.statitem:last-of-type{
+    padding-right: 4rem
+}
+td {
+    padding: 0 15px;
+}
+.search{
+    width: 10rem;
+}
+
+
+/* some default 1rem margins */
+.mx-2{
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+.my-2{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.ml-2{
+    margin-left: 2rem;
+}
+.mr-2{
+    margin-right: 2rem;
+}
+.mt-2{
+    margin-top: 2rem;
+}
+.mb-2{
+    margin-bottom: 2rem;
+}
+.m-1 {
+    margin: 1rem;
+}
+.m-2 {
+    margin: 2rem;
+}
+.m-3 {
+    margin: 3rem;
+}
+.m-4{
+    margin: 4rem;
+}
+/* ------------------------------ */

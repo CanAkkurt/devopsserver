@@ -1,0 +1,68 @@
+﻿.loading-indicator-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-top: 50vh;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+.heading-container, .main {
+    display: flex;
+    flex-direction: column;
+}
+.activity-chip {
+    align-self: center;
+}
+.chip-container {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* some default 1rem margins */
+.mx-2{
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+.my-2{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.ml-2{
+    margin-left: 2rem;
+}
+.mr-2{
+    margin-right: 2rem;
+}
+.mt-2{
+    margin-top: 2rem;
+}
+.mb-2{
+    margin-bottom: 2rem;
+}
+.m-1 {
+    margin: 1rem;
+}
+.m-2 {
+    margin: 2rem;
+}
+.m-3 {
+    margin: 3rem;
+}
+.mt-4{
+    margin-top: 4rem;
+}
+.mb-4{
+    margin-bottom: 4rem;
+}
+.m-4{
+    margin: 4rem;
+}
+/* ------------------------------ */

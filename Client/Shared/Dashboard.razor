@@ -1,0 +1,148 @@
+﻿@page "/home"
+@using global::Shared.VirtualMachines;
+@using global::Shared.Projects;
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+
+<AuthorizeView>
+<div class="row header" style="margin: 1rem 1rem 1rem 2rem;">
+    
+    
+    <div class="heading-container">
+        <MudText Typo="Typo.h3">Dashboard</MudText>
+            <MudText Typo="Typo.subtitle1">Welcome back , @context.User.Identity.Name! </MudText>
+         
+         
+    </div>
+	
+    <div>
+        <!--add something on the right side?-->
+    </div>
+</div>
+</AuthorizeView>
+<MudCard Outlined="true" Class="ma-8">
+    <MudCardContent>
+        <div class="row stats">
+            <div class="statitem">
+                <MudText Typo="Typo.h6" Align="Align.Center" Class="mb-1">CUSTOMERS</MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center">@totalCustomer</MudText>
+            </div>
+            <MudDivider Vertical="true" FlexItem="true" />
+            <div class="statitem">
+                <MudText Typo="Typo.h6" Align="Align.Center" Class="mb-1">PROJECTS</MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center">@totalProject</MudText>
+            </div>
+            <MudDivider Vertical="true" FlexItem="true" />
+            <div class="statitem">
+                <MudText Typo="Typo.h6" Align="Align.Center" Class="mb-1">VIRTUAL MACHINES</MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center">@totalVm</MudText>
+            </div>
+            <MudDivider Vertical="true" FlexItem="true" />
+            <div class="statitem">
+                <MudText Typo="Typo.h6" Align="Align.Center" Class="mb-1"> RESOURCES</MudText>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#vCPUs</th>
+                            <th>RAM (GB)</th>
+                            <th>Storage (TB)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@{<text>@totalVcpu</text>}<b>&nbsp;/&nbsp;</b>@{<text>@totalVcpuAvailable</text>}</td>
+                            <td>@{<text>@totalRam</text>}<b>&nbsp;/&nbsp;</b>@{<text>@totalRamAvailable</text>}</td>
+                            <td>@{<text>@totalStorage.ToString("0.#")</text>}<b>&nbsp;/&nbsp;</b>@{<text>@totalStorageAvailable</text>}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <MudText Typo="Typo.subtitle1"></MudText>
+            </div>
+        </div>
+    </MudCardContent>
+    <AuthorizeView Roles="Admin,Manager">
+		<MudCardActions>
+			<MudLink Href="/analytics" Typo="Typo.body2">More analytics</MudLink>
+		</MudCardActions>
+    </AuthorizeView>
+    
+</MudCard>
+<div class="main m-2">
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudTabPanel Text="Virtuele Machines">
+            <MudDataGrid Outlined="true" T="VirtualMachineDto.Detail" Items="@_vms" SortMode="SortMode.Multiple" Hover="true" Filterable="true" QuickFilter="@QuickFilterVM"
+                    Hideable="true" RowClick="@VMRowClicked">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Virtuele Machines</MudText>
+                    <MudSpacer />
+                    <MudItem xs=12 md=6 lg=4>
+                        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                        </MudTextField>
+                    </MudItem>
+                     <AuthorizeView Roles="Admin,Manager">
+						<div Class="button-container">
+							<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success"
+									   IconColor="Color.Surface" Size="Size.Large" OnClick="@OnAddVM">Voeg VM toe</MudButton>
+						</div>
+                    </AuthorizeView>
+
+
+                </ToolBarContent>
+                <Columns>
+                    <Column T="VirtualMachineDto.Index" Field="Name" Title="Naam" />
+                    <!--<Column T="VirtualMachineDto.Index" Field="Customer" title="Customer" />-->
+                    <Column T="VirtualMachineDto.Index" Field="State" Title="Status" />
+                    <Column T="VirtualMachineDto.Index" Field="VCPUamount" Title=#VCPU/>
+                    <Column T="VirtualMachineDto.Index" Field="MemoryAmount" Title="RAM (GB)" />
+                    <Column T="VirtualMachineDto.Index" Field="StorageAmount" Title="Opslag (GB)" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="VirtualMachineDto.Index" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Projecten">
+            <MudDataGrid Outlined="true" T="ProjectDto.Index" Items="@_projects" SortMode="SortMode.Multiple" Hover="true" Filterable="true" QuickFilter="@QuickFilterProject"
+                         Hideable="true" RowClick="@ProjectRowClicked">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Projecten</MudText>
+                    <MudSpacer />
+                    <MudItem xs=12 md=6 lg=4>
+                        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                        </MudTextField>
+                    </MudItem>
+                    <AuthorizeView Roles="Admin,Manager">
+						<div Class="button-container">
+							<MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success"
+									   IconColor="Color.Surface" Size="Size.Large" OnClick="@OnAddProject">Voeg project toe</MudButton>
+						</div>
+                    </AuthorizeView>
+                   
+                </ToolBarContent>
+                <Columns>
+                    <Column T="ProjectDto.Index" Field="Name" Title="Naam" />
+                    <Column T="ProjectDto.Index" Field="CustomerName" Title="Naam klant" />
+                    <Column T="ProjectDto.Index" Field="VmAmount" Title="Aantal VMs" />
+                    <Column T="ProjectDto.Index" Field="TotalCPUs" Title="Totaal #vCPUs" />
+                    <Column T="ProjectDto.Index" Field="TotalMemory" Title="Totaal geheugen(GB)" />
+                    <Column T="ProjectDto.Index" Field="TotalStorage" Title="Totaal opslag(GB)" />
+                    <Column T="ProjectDto.Index" Field="StartDate" Title="startdatum" />
+                    <Column T="ProjectDto.Index" Field="EndDate" Title="einddatum" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="ProjectDto.Index" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudTabPanel>
+    </MudTabs>
+</div>
+
+
+
+

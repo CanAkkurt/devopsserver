@@ -1,0 +1,297 @@
+﻿@using Client.Pages.Tickets
+@using global::Shared.VirtualMachines;
+
+@page "/virtualmachines/{id:int}"
+@attribute [Authorize]
+
+@if (vm == null)
+{
+    <div class="row m-2 header">
+        <div class="heading-container">
+            <MudText Typo="Typo.h3">VM-detail</MudText>
+            <MudText Typo="Typo.subtitle1">Loading...</MudText>
+        </div>
+        <div>
+            <!--possibly put something on the right side?-->
+        </div>
+    </div>
+    <div class="loading-indicator-container">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true"/>
+    </div>
+}
+else
+{
+    <div class="row m-2 header">
+        <div class="heading-container">
+            <div class="row">
+                <MudText Typo="Typo.h3">@vm.Name - Detail</MudText>
+                <div class="chip-container">
+                    <MudChip Size="Size.Small" Class="activity-chip">@ActiveText()</MudChip>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main mt-2 mb-4" style="margin-left: 2rem;">
+        <div class="row" style="flex-wrap: wrap;">
+            <MudCard Style="width: 25rem; padding-bottom: 2rem; margin-bottom: 2rem; margin-right: 2rem;">
+                <MudCardHeader Style="padding-bottom: 0.5rem;">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Toegewezen resources</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Style="padding-top: 0;">
+                    <MudTable class="table" Items="@tableItem" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0" Bordered="false" Dense="true">
+                        <HeaderContent>
+                            <MudTh><MudText Typo="Typo.subtitle2">#vCPUs</MudText></MudTh>
+                            <MudTh><MudText Typo="Typo.subtitle2">RAM (GB)</MudText></MudTh>
+                            <MudTh><MudText Typo="Typo.subtitle2">Opslag (GB)</MudText></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="#vCPUs">@context.VCPUamount</MudTd>
+                            <MudTd DataLabel="RAM (GB)">@context.MemoryAmount</MudTd>
+                            <MudTd DataLabel="Opslag (GB)">@context.StorageAmount</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+            </MudCard>
+            <MudCard Style="width: 20rem; margin-bottom: 2rem;">
+                <MudCardHeader Style="padding-bottom: 0;">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Gerelateerd</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Style="padding-top: 0;">
+                    <MudItem class="row">
+                        <MudLink @onclick="NavigateToCustomerDetail" Style="display: flex; align-content: center;">
+                            <!--TODO: navigeren naar klant detail met id -->
+                            <MudIcon Icon="@Icons.Filled.PersonSearch"></MudIcon>
+                            @if(vm.Customer != null)
+                            {
+                                <text>Klant: @vm.Customer.Name</text>
+                            }
+                            else
+                            {
+                                <text>Klant: (niet ingesteld)</text>
+                            }
+                        </MudLink>
+                    </MudItem>
+                    <MudItem Style="margin-top: 0.5rem;" class="row">
+                        <MudLink @onclick="NavigateToProjectDetail" Style="display: flex; align-content: center;">
+                            <!--TODO: navigeren naar project detail met id -->
+                            <MudIcon Icon="@Icons.Filled.Assignment"></MudIcon>
+                            @if (vm.Project != null)
+                            {
+                                <text>Project: @vm.Project.Name</text>
+                            }
+                            else{
+                                <text>Project: (niet ingesteld)</text>
+                            }
+                            
+                        </MudLink>
+                    </MudItem>
+                    <MudItem Style="margin-top: 0.5rem;" class="row">
+                        <MudLink @onclick="MailtoBackupContact" Style="display: flex; align-content: center;">
+                            <MudIcon Icon="@Icons.Filled.Person"></MudIcon>
+                            Backup Contactpersoon (TODO)
+                            <!--TODO: naam backup contact ophalen via klant id -->
+                        </MudLink>
+                    </MudItem>
+                    <MudItem @onclick="NavigateToMemberDetail" Style="margin-top: 0.5rem;" class="row">
+                        <MudLink Style="display: flex; align-content: center;">
+                            <MudIcon Icon="@Icons.Filled.Badge"></MudIcon>
+                            @if (vm.Creator != null)
+                            {
+                                <text>VIC-lid: @vm.Creator.Name</text>
+                            }
+                            else
+                            {
+                                <text>VIC-lid: (niet ingesteld)</text>
+                            }
+                        </MudLink>
+                    </MudItem>
+                </MudCardContent>
+            </MudCard>
+            <MudSpacer/>
+        </div>
+        <div class="row">
+            <MudCard>
+                <MudCardContent>
+                    <div class="row" style="flex-wrap: wrap;">
+                        <div class="row">
+                            <div class="col" style="width: 8rem;">
+                                <MudText Class="mb-4" Typo="Typo.subtitle1"><b>Startdatum</b></MudText>
+                                <MudText Typo="Typo.subtitle1"><b>Modus</b></MudText>
+                                <MudText Typo="Typo.subtitle1"><b>Hostnaam</b></MudText>
+                            </div>
+                            <div class="col" style="padding-right: 1rem;">
+                                <MudText Class="mb-4" Typo="Typo.subtitle1">@vm.StartDate.ToString("dd/MM/yyyy")</MudText>
+                                <MudText Typo="Typo.subtitle1">@vm.Modus</MudText>
+                                <MudText Typo="Typo.subtitle1">@vm.Hostname</MudText>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="width: 8rem;">
+                                <MudText Class="mb-4" Typo="Typo.subtitle1"><b>Einddatum</b></MudText>
+                                <MudText Typo="Typo.subtitle1"><b>FQDN</b></MudText>
+                                <MudText Typo="Typo.subtitle1"><b>Fysieke server</b></MudText>
+                            </div>
+                            <div class="col">
+                                <MudText Class="mb-4" Typo="Typo.subtitle1">@vm.EndDate.ToString("dd/MM/yyyy")</MudText>
+                                <MudText Typo="Typo.subtitle1">@vm.FQDN</MudText>
+                                <MudText Typo="Typo.subtitle1">@vm.FysiekeServer</MudText>
+                            </div>
+                        </div>
+                        <!--<MudSpacer />-->
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col" style="width: 10rem;">
+                            <MudText Typo="Typo.subtitle1"><b>Backup frequentie</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>Beschikbaarheid</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>High-availability</b></MudText>
+                        </div>
+                        <div class="col">
+                            <MudText Typo="Typo.subtitle1">@vm.BackupFrequency</MudText>
+                            <MudText Typo="Typo.subtitle1">@vm.Availability</MudText>
+                            <MudText Typo="Typo.subtitle1">@vm.HighAvailability</MudText>
+                        </div>
+                        <MudSpacer />
+                    </div>
+                </MudCardContent>
+            </MudCard>
+            <MudSpacer/>
+        </div>
+        <div class="row">
+            <MudCard Style="margin-top: 2rem; max-width: 47rem;">
+                <MudCardContent Style="padding-top: 0;">
+                    <MudExpansionPanel DisableGutters="true" Text="Beschrijving">
+                        <TitleContent>
+                            <MudText Style="margin-left: -1.5rem;" Typo="Typo.h6">Beschrijving</MudText>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudText Typo="Typo.body2">@vm.RelationCustomerDescription</MudText>
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudCardContent>
+            </MudCard>
+        </div>
+        <div class="row">
+            <MudCard Style="width: 25rem; margin-top: 2rem; margin-right: 2rem;">
+                <MudCardHeader Style="padding-bottom: 0.5rem;">
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Netwerkpoorten</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Style="padding-top: 0;">
+                    <MudStack Style="flex-wrap: wrap;" Row="true">
+                        @foreach (var port in ports)
+                        {
+                            <MudPaper Style="display: flex; padding-bottom: 0;" Class="pa-3">
+                                <MudText Typo="Typo.subtitle2">@(port.Type):&nbsp;</MudText>@port.Nummer
+                            </MudPaper>
+                        }
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+            <MudSpacer/>
+        </div>
+        <div class="row" style="max-width: 25rem;">
+            <MudCard Style="margin-top: 2rem; margin-right: 2rem;">
+                <MudExpansionPanel Style="padding-bottom: 0;" @bind-IsExpanded="isOpen" HideIcon="true" @onclick="Close">
+                    <TitleContent>
+                        <div class="d-flex">
+                            <MudText Style="display: flex; align-content: center" Typo="Typo.h6" Class="mt-1">
+                                <MudBadge Style="height: 1.5rem; padding-top: 0.25rem; margin-right: 0.25rem;" Content="@_tickets.ToList().Count" Color="Color.Primary" Overlap="true" Class="d-flex ml-auto">
+                                    <MudIcon Icon="@Icons.Filled.Announcement" Color="Color.Default" />
+                                </MudBadge>
+                                Tickets
+                            </MudText>
+                            <MudIcon Style="margin-top: 0.375rem;" Icon="@(isOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Add)" class="ml-auto"></MudIcon>
+                        </div>
+                    </TitleContent>
+                    <ChildContent>
+                        @foreach (var t in _tickets)
+                        {
+                            @if (_tickets.ToList().IndexOf(t) == _tickets.ToList().Count - 1)
+                            {
+                                <MudCard>
+                                    <MudCardContent Style="padding-bottom: 0;">
+                                        <MudText><b>@t.Title</b></MudText>
+                                        <MudTooltip Text="@t.Description">
+                                            <ChildContent>
+                                                <MudText Style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: calc(20rem);" Typo="Typo.body2">@t.Description</MudText>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText Style="max-width: 40rem;">@t.Description</MudText>
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    </MudCardContent>
+                                    <MudCardActions>
+                                        <MudButton @onclick="() => Open(t.Id)" Variant="Variant.Text" Color="Color.Primary">Detail</MudButton>
+                                    </MudCardActions>
+                                </MudCard>
+                            }
+                            else
+                            {
+                                <MudCard Style="margin-bottom: 1rem;">
+                                    <MudCardContent Style="padding-bottom: 0;">
+                                        <MudText><b>@t.Title</b></MudText>
+                                        <MudTooltip Text="@t.Description">
+                                            <ChildContent>
+                                                <MudText Style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: calc(20rem);" Typo="Typo.body2">@t.Description</MudText>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText Style="max-width: 40rem;">@t.Description</MudText>
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    </MudCardContent>
+                                    <MudCardActions>
+                                        <MudButton @onclick="() => Open(t.Id)" Variant="Variant.Text" Color="Color.Primary">Detail</MudButton>
+                                    </MudCardActions>
+                                </MudCard>
+                            }
+                        }
+
+                        <MudButton Variant="Variant.Text" @onclick="NavigateToCreateTicket" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Info">
+                            Maak een ticket voor deze VM
+                        </MudButton>
+
+                    </ChildContent>
+                </MudExpansionPanel>
+            </MudCard>
+        </div>
+    </div>
+
+
+    <SidepanelComponent Title="Tickets" @ref="sidepanel">
+        <Client.Pages.Tickets.Detail id=@currentTicket.Id></Client.Pages.Tickets.Detail>
+    </SidepanelComponent>
+
+
+    <AuthorizeView Roles="Admin, Moderator">
+        @if (!_isRequestingCancel)
+        {
+            <div style="margin-top: 1rem; margin-left: 2rem; margin-bottom: 1rem;">
+                <MudButton Variant="Variant.Filled" @onclick="NavigateToEdit" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Info">
+                    Wijzig VM
+                </MudButton>
+                <MudButton Style="margin-left: 1rem;" Variant="Variant.Filled" @onclick="ChangeCancel" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Error">
+                    Verwijder VM
+                </MudButton>
+            </div>
+        }
+        else
+        {
+            <div style="margin-top: 1rem; margin-left: 2rem; margin-bottom: 1rem;">
+                <MudButton Variant="Variant.Filled" @onclick="ChangeCancel" Size="Size.Medium" Color="Color.Info">
+                    Neen ik wil niet cancelen
+                </MudButton>
+                <MudButton Variant="Variant.Filled" @onclick="DeleteVMAsync" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Error">
+                    Bent u zeker?
+                </MudButton>
+            </div>
+        }
+    </AuthorizeView>
+
+}
+

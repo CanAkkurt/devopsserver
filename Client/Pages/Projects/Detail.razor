@@ -1,0 +1,248 @@
+﻿@using global::Shared.Tickets
+@page "/projects/{id:int}"
+@attribute [Authorize]
+
+@if(project == null){
+    <div class="row m-2 header">
+        <div class="heading-container">
+            <MudText Typo="Typo.h3">Project-detail</MudText>
+            <MudText Typo="Typo.subtitle1">Loading...</MudText>
+        </div>
+        <div>
+            <!--possibly put something on the right side?-->
+        </div>  
+    </div>
+    <div class="loading-indicator-container">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+    </div>
+}
+else{
+    <div class="row m-2 header">
+        <div class="heading-container">
+            <div class="row">
+                <MudText Typo="Typo.h3">@(project.Name) - Detail</MudText>
+                <div class="chip-container">
+                    @if (projectIsActive) { 
+                        <MudTooltip Text="Dit project is actief.">
+                            <MudChip Size="Size.Small" Class="activity-chip">Actief</MudChip>
+                        </MudTooltip> 
+                    } 
+                    else {
+                        <MudTooltip Text="Dit project is inactief.">
+                            <MudChip Size="Size.Small" Class="activity-chip">Inactief</MudChip>
+                        </MudTooltip>
+                    }
+                </div>
+            </div>
+        </div>
+        <div>
+            <!--possibly put something on the right side?-->
+        </div>
+    </div>
+    <div class="row">
+        <MudCard Style="margin-left: 2rem;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">@(project.Name) - gegevens</MudText>
+            </MudCardHeader>
+            <MudCardContent Style="padding-top: 0;">
+                <div class="row" style="flex-wrap: wrap;">
+                    <div class="row">
+                        <div class="col" style="max-width: 15rem;margin-right: 1rem;">
+                            <MudText Typo="Typo.subtitle1"><b>Naam klant</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>Status</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>Startdatum</b></MudText>
+                            <MudText Typo="Typo.subtitle1"><b>Einddatum</b></MudText>
+                        </div>
+                        <div class="col" style="padding-right: 1rem;">
+                            <MudButton Style="padding-top: 0; padding-bottom: 0;" OnClick="NavigateToCustomerDetail" StartIcon="@Icons.Filled.PersonSearch" Variant="Variant.Text" Color="Color.Primary">
+                                @project.CustomerName
+                            </MudButton>
+                            <MudText Typo="Typo.subtitle1">@project.State</MudText>
+                            <MudText Typo="Typo.subtitle1">@project.StartDate.ToString("dd/MM/yyyy")</MudText>
+                            <MudText Typo="Typo.subtitle1">@project.EndDate.ToString("dd/MM/yyyy")</MudText>
+                        </div>
+                    </div>
+                </div>
+            </MudCardContent>
+        </MudCard>
+        <MudSpacer />
+    </div>
+    <div class="row">
+        <MudCard Style="margin: 2rem;">
+            <MudExpansionPanel>
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudText Style="display: flex; align-content: center" Typo="Typo.h6" Class="mt-1">
+                            <MudBadge Style="height: 1.5rem; padding-top: 0.25rem; margin-right: 0.25rem;" Content="@virtualMachines.Count()" Color="Color.Primary" Overlap="true" Class="d-flex ml-auto">
+                                <MudIcon Icon="@Icons.Filled.Computer" Color="Color.Default" />
+                            </MudBadge>
+                            Virtuele Machines
+                        </MudText>
+                        <MudSpacer />
+                        <MudText Style="display: flex; align-content: center; margin-top: calc(4px + 0.375rem); margin-left: 2rem;">
+                            <b>Totaal aantal vCPUs:&nbsp;</b>@(project.TotalCPUs)
+                        </MudText>
+                        <MudSpacer />
+                        <MudText Style="display: flex; align-content: center; margin-top: calc(4px + 0.375rem); margin-left: 2rem;">
+                            <b>Totale hoeveelheid geheugen:&nbsp;</b>@(project.TotalMemory)GB
+                        </MudText>
+                        <MudSpacer />
+                        <MudText Style="display: flex; align-content: center; margin-top: calc(4px + 0.375rem); margin-left: 2rem;">
+                            <b>Totale hoeveelheid opslag:&nbsp;</b>@(project.TotalStorage)GB
+                        </MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    @foreach(var vm in virtualMachines)
+                    {
+                        <MudCard Style="margin-bottom: 0.5rem;">
+                            <MudCardContent>
+                                <div class="row">
+                                    <MudTooltip Text="Klik voor VM-detail."><MudButton Style="margin-left: -1rem;" OnClick="() => NavigateToVMDetail(vm.Id)" Variant="Variant.Text" Size="Size.Large">@vm.Name</MudButton></MudTooltip>
+                                    <!--<MudText Typo="Typo.h6">@vm.Name</MudText>-->
+                                    @if (DateTime.Compare(vm.StartDate, DateTime.Now) <= 0 && DateTime.Compare(vm.EndDate, DateTime.Now) > 0)
+                                    {
+                                        <MudTooltip>
+                                            <ChildContent>
+                                                <MudChip Style="margin-top: 0.5rem;" Size="Size.Small" Class="activity-chip">Actief</MudChip>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText>Deze VM is actief.</MudText>
+                                                <MudText>Startdatum: @(vm.StartDate.ToString("dd/MM/yyyy"))</MudText>
+                                                <MudText>Einddatum: @(vm.EndDate.ToString("dd/MM/yyyy"))</MudText>
+                                            </TooltipContent>
+                                        </MudTooltip>
+                                    }
+                                    else
+                                    {
+                                        <MudTooltip>
+                                            <ChildContent>
+                                                <MudChip Size="Size.Small" Class="activity-chip">Inactief</MudChip>
+                                            </ChildContent>
+                                            <TooltipContent>
+                                                <MudText>Deze VM is inactief.</MudText>
+                                                <MudText>Startdatum: @(vm.StartDate.ToString("dd/MM/yyyy"))</MudText>
+                                                    <MudText>Einddatum: @(vm.EndDate.ToString("dd/MM/yyyy"))</MudText>
+                                                </TooltipContent>
+                                            </MudTooltip>
+                                    }
+                                    <MudSpacer />
+                                </div>
+                                <div class="row">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-right: 1rem;"><MudText Typo="Typo.body2"><b>#vCPU: </b>@(vm.VCPUamount)</MudText></td>
+                                                    <td style="padding-right: 1rem;"><MudText Typo="Typo.body2"><b>Geheugen: </b>@(vm.MemoryAmount)GB</MudText></td>
+                                                <td><MudText Typo="Typo.body2"><b>Opslag: </b>@(vm.StorageAmount)GB</MudText></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <MudExpansionPanels MultiExpansion="true">
+                                        @foreach(var ticket in ticketsByVmId[vm.Id])
+                                        {
+                                            <MudExpansionPanel Dense="true">
+                                                <TitleContent>
+                                                    @if(ticket.Severity == "CRITICAL")
+                                                    {
+                                                        <MudButton 
+                                                            OnClick="NavigateToCustomerDetail" 
+                                                            StartIcon="@Icons.Filled.Announcement" 
+                                                            Variant="Variant.Text"
+                                                            Color="Color.Error"
+                                                            IconColor="Color.Error">
+                                                                @ticket.Title
+                                                        </MudButton>
+                                                    }
+                                                    else if (ticket.Severity == "MAJOR")
+                                                    {
+                                                        <MudButton 
+                                                            OnClick="NavigateToCustomerDetail" 
+                                                            StartIcon="@Icons.Filled.Announcement" 
+                                                            Variant="Variant.Text"
+                                                            Color="Color.Warning"
+                                                            IconColor="Color.Warning">
+                                                                @ticket.Title
+                                                        </MudButton>
+                                                    }
+                                                    else
+                                                    {
+                                                        <!--MINOR, UNDEFINED or something else-->
+                                                        <MudButton 
+                                                            OnClick="NavigateToCustomerDetail" 
+                                                            StartIcon="@Icons.Filled.Announcement" 
+                                                            Variant="Variant.Text">
+                                                                @ticket.Title
+                                                        </MudButton>
+                                                    }
+                                                </TitleContent>
+                                                <ChildContent>
+                                                    <div class="row" style="flex-wrap: wrap;">
+                                                        <div class="row">
+                                                            <div class="col" style="max-width: 15rem;margin-right: 1rem;">
+                                                                <MudText Typo="Typo.subtitle1"><b>Aangemaakt op:</b></MudText>
+                                                                <MudText Typo="Typo.subtitle1"><b>Laatst gewijzigd op:</b></MudText>
+                                                                <MudText Typo="Typo.subtitle1"><b>Status:</b></MudText>
+                                                            </div>
+                                                            <div class="col" style="padding-right: 1rem;">
+                                                                <MudText Typo="Typo.subtitle1">@ticket.CreatedAt.ToString("dd/MM/yyyy")</MudText>
+                                                                <MudText Typo="Typo.subtitle1">@ticket.LastUpdatedAt.ToString("dd/MM/yyyy")</MudText>
+                                                                <MudText Typo="Typo.subtitle1">@project.State</MudText>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                    <MudText Style="margin-top: 0.5rem;"><b>Beschrijving:</b></MudText>
+                                                    <MudText Style="max-width: 55rem; margin-bottom: 0.5rem;" Typo="Typo.body2">
+                                                        @(ticket.Description)
+                                                    </MudText>
+                                                    <!--<div class="row">
+                                                        <MudExpansionPanel DisableGutters="true" Dense="true">
+                                                            <TitleContent>
+                                                                <MudText Style="margin-left: -1.5rem;"><b>Beschrijving</b></MudText>
+                                                            </TitleContent>
+                                                            <ChildContent>
+                                                                <MudText Typo="Typo.body2">@ticket.Description</MudText>
+                                                            </ChildContent>
+                                                        </MudExpansionPanel>
+                                                    </div>-->
+                                                </ChildContent>
+                                            </MudExpansionPanel>
+                                        }
+                                    </MudExpansionPanels>
+                                </div>
+                            </MudCardContent>
+                        </MudCard>
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudCard>
+    </div>
+
+    <AuthorizeView Roles="Admin, Moderator">
+        @if (!_isRequestingCancel)
+        {
+            <div style="margin-left: 2rem; margin-bottom: 1rem;">
+                <MudButton Variant="Variant.Filled" @onclick="NavigateToEdit" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Medium" Color="Color.Info">
+                    Wijzig Project
+                </MudButton>
+                <MudButton Style="margin-left: 1rem;" Variant="Variant.Filled" @onclick="ChangeCancel" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Error">
+                    Verwijder Project
+                </MudButton>
+            </div>
+        }
+        else
+        {
+            <div style="margin-left: 2rem; margin-bottom: 1rem;">
+                <MudButton Variant="Variant.Filled" @onclick="ChangeCancel" Size="Size.Medium" Color="Color.Info">
+                    Neen ik wil niet cancelen
+                </MudButton>
+                <MudButton Variant="Variant.Filled" @onclick="DeleteProjectAsync" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Error">
+                    Bent u zeker?
+                </MudButton>
+            </div>
+        }
+    </AuthorizeView>
+}
+

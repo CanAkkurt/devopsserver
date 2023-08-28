@@ -1,0 +1,17 @@
+﻿@using global::Shared.VirtualMachines;
+@page "/Analytics/"
+@attribute [Authorize(Roles = "Manager, Admin")]
+
+<div> Analytics data</div>
+<div style="display:flex; width:100%; flex-direction:column;">
+
+    <h2 style="align-self:center;"> Total Ram </h2>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@RamGraph" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" Style="margin-bottom:2rem;"></MudChart>
+    <h2 style="align-self:center;">Virtual CPU's </h2>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@vCpuGraph" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" Style="margin-bottom:2rem;"></MudChart>
+    <h2 style="align-self:center;"> Total Storage </h2>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@StorageGraph" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" Style="margin-bottom:2rem;"></MudChart>
+
+
+</div>
+

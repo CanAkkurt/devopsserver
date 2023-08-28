@@ -1,0 +1,18 @@
+﻿@page "/login"
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+<MudPaper Class="pa-4 ma-4">
+    <MudForm @ref="form" @bind-IsValid="@success">
+        <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required" />
+        <MudTextField T="string" Label="Password" Required="true" InputType="InputType.Password" />
+        <div class="d-flex align-center justify-space-between mt-2">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="">Register</MudButton>
+        </div>
+    </MudForm>
+</MudPaper>
+
+@code {
+    bool success;
+    MudForm? form;
+}

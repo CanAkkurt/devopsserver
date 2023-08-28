@@ -1,0 +1,52 @@
+﻿@page "/ticketdetail/{id:int}"
+@attribute [Authorize]
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Ticket - Detai</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='./css/app.css'>
+</head>
+<body>
+    <main>
+        @if(ticket == null) 
+        {
+            <p>Loading...</p>
+        }
+        else 
+        {
+            <div class="titleTicket">
+                <h1 class="title">Ticket</h1>
+            </div>
+
+            <div class="ticketDetail">
+                <h2 class="ticketTitle">@ticket.Title</h2>
+                <div class="ticketDescription">
+                    <p class="ticketBeschrijvingTekst"><b>Beschrijving</b>: <br /> @ticket.Description</p>
+                </div>
+                <div class="ticketStateSeverity">
+                    <p class="ticketState"><b>Status</b>: @ticket.State</p>
+                    <p class="ticketSeverity">
+                        <b>Schade</b>: @(@ticket.Severity != "UNDEFINED" ? @ticket.Severity : "Niet gespecifieerd")
+                    </p>
+                </div>
+                <div class="ticketDates">
+                    <p class="ticketCreatedAt">Ticket is <b>aangemaakt</b> op @ticket.CreatedAt</p>
+                    <p class="ticketLastUpdatedAt">Ticket is voor het laatst <b>geüpdate</b> op @ticket.LastUpdatedAt</p>
+                </div>
+            </div>
+        }
+
+
+            <MudButton Variant="Variant.Filled" @onclick="Edit" Size="Size.Medium" Color="Color.Info">
+                Wijzig ticket
+            </MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="Close" Size="Size.Medium" Color="Color.Error">
+                Sluit
+            </MudButton>
+    </main>
+</body>
+</html>
+

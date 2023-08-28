@@ -1,0 +1,90 @@
+﻿@page "/members/add"
+@attribute [Authorize(Roles = "Admin")]
+
+<main>
+    <MudText Typo="Typo.h3">Lid toevoegen</MudText>
+    <div class="row">
+        <MudForm Style="flex-grow: 1; max-width: calc(30rem + 2*1rem);" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudCard>
+                <MudCardHeader Style="padding-bottom: 0;">
+                    <div class="row">
+                        <MudText Typo="Typo.h5">Gegevens nieuw lid</MudText>
+                        <MudSpacer />
+                    </div>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div style="margin-top: -1rem;" class="field-container mw-30">
+                        <MudTextField T="string" Label="Naam" @bind-Value="@newMember.Name" Required="true" RequiredError="De naam van een klant is verplicht!" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudTextField T="string" Label="Email" @bind-Value="@newMember.Email" Required="true" RequiredError="De email is verplicht!" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudTextField T="string" Label="Telefoonnummer" @bind-Value="@newMember.PhoneNumber" />
+                        <MudSpacer />
+                    </div>
+                    <div class="field-container mw-30">
+                        <MudSelect T="String" Label="Rol" MultiSelection="false" @bind-Value="@newMember.Role" Required="true" RequiredError="Er moet een rol geslecteerd zijn." Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem T="String" Value=Domain.MemberRole.Admin.ToString() />
+                            <MudSelectItem T="String" Value=Domain.MemberRole.Manager.ToString() />
+                            <MudSelectItem T="String" Value=Domain.MemberRole.Viewer.ToString() />
+                        </MudSelect>
+                    </div>
+                    <div class="field-container mw-30" style="margin-top: 0.5rem;">
+                        <MudSelect T="String" Label="Departement" MultiSelection="false" @bind-Value="@newMember.Department" Required="true" RequiredError="Er moet een departement geslecteerd zijn." Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem T="String" Value=Domain.Department.DBO.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DBT.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DOG.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DIT.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DSA.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DGZ.ToString() />
+                            <MudSelectItem T="String" Value=Domain.Department.DLO.ToString() />
+                        </MudSelect>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudForm>
+    </div>
+
+    <!--Buttons-->
+    @if (!_isRequestingCancel)
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="CreateMemberAsync"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Save
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Cancel
+            </MudButton>
+        </div>
+    }
+    else
+    {
+        <div style="margin-top: 1rem;">
+            <MudButton Variant="Variant.Filled"
+                   @onclick="ChangeCancel"
+                   Size="Size.Medium"
+                   Color="Color.Info">
+                Neen ik wil niet cancelen
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                   @onclick="Reset"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Size="Size.Medium"
+                   Color="Color.Error">
+                Bent u zeker?
+            </MudButton>
+        </div>
+    }
+</main>
+

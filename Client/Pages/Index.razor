@@ -1,0 +1,38 @@
+﻿@page "/"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+
+@GetClaimsPrincipalData()
+<PageTitle>@authMessage</PageTitle>
+
+
+<h1>@authMessage</h1>
+
+
+
+@code {
+    private string authMessage;
+    private string surnameMessage;
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        authMessage = "niet";
+        if (user.Identity.IsAuthenticated)
+        {   
+            
+            Navigation.NavigateTo("home");
+
+        }
+        else
+        {
+            Navigation.NavigateTo("authentication/login");
+            authMessage = "The user is NOT authenticated.";
+        }
+    }
+}
+

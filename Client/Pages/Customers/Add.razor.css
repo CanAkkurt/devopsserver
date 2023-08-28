@@ -1,0 +1,19 @@
+﻿main {
+    margin: 2rem;
+}
+.field-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mw-10 { max-width: 10rem; }
+.mw-15 { max-width: 15rem; }
+.mw-20 { max-width: 20rem; }
+.mw-25 { max-width: 25rem; }
+.mw-30 { max-width: 30rem; }

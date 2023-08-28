@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Domain.Customer">
+    <Position X="9.5" Y="0.75" Width="2" />
+    <AssociationLine Name="BackupContact" Type="Domain.Customer">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.32" Y="-0.255" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Projects" Type="Domain.Project" FixedToPoint="true">
+      <Path>
+        <Point X="10.766" Y="0.75" />
+        <Point X="10.766" Y="0.375" />
+        <Point X="6.125" Y="0.375" />
+        <Point X="6.125" Y="2.438" />
+        <Point X="6.5" Y="2.438" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Tickets" Type="Domain.Ticket" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11.5" Y="3.125" />
+        <Point X="12.688" Y="3.125" />
+        <Point X="12.688" Y="6.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAQCABAQACAAAEAAAAAAQEQAEAAJAAAAAAAgQAQBAQE=</HashCode>
+      <FileName>Customer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Department" />
+      <Property Name="MemberContact" />
+      <Property Name="BackupContact" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Projects" />
+      <Property Name="Tickets" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Domain.Member">
+    <Position X="13.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAEAAEQAQAEAAIAAAgAAAAAAAAAIA=</HashCode>
+      <FileName>Member.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Role" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Domain.Project">
+    <Position X="6.5" Y="1.75" Width="1.5" />
+    <AssociationLine Name="Customer" Type="Domain.Customer" FixedFromPoint="true">
+      <Path>
+        <Point X="6.5" Y="2.812" />
+        <Point X="6.125" Y="2.812" />
+        <Point X="6.125" Y="0.375" />
+        <Point X="10.102" Y="0.375" />
+        <Point X="10.102" Y="0.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Machines" Type="Domain.VirtualMachine" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.375" Y="1.75" />
+        <Point X="7.375" Y="1.375" />
+        <Point X="8.875" Y="1.375" />
+        <Point X="8.875" Y="5.688" />
+        <Point X="8.5" Y="5.688" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAECACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Project.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Customer" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Machines" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Domain.Ticket">
+    <Position X="12.25" Y="6.25" Width="1.75" />
+    <AssociationLine Name="Creator" Type="Domain.Customer" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.062" Y="6.25" />
+        <Point X="13.062" Y="2.812" />
+        <Point X="11.5" Y="2.812" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAAAAAAIAAAAEAAAAAQAAAA=</HashCode>
+      <FileName>Ticket.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Creator" />
+      <Property Name="Severity" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Domain.VirtualMachine">
+    <Position X="5.75" Y="4.25" Width="2.75" />
+    <AssociationLine Name="Project" Type="Domain.Project" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.5" Y="6" />
+        <Point X="8.875" Y="6" />
+        <Point X="8.875" Y="1.375" />
+        <Point X="7.062" Y="1.375" />
+        <Point X="7.062" Y="1.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>QAUCABAAAAAAAAAAAAAACQQAEARAAAAAAAAABAAiAAA=</HashCode>
+      <FileName>VirtualMachine.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Project" />
+      <Property Name="State" />
+    </ShowAsAssociation>
+  </Class>
+  <Enum Name="Domain.Department">
+    <Position X="9.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAgAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAABA=</HashCode>
+      <FileName>Customer.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Domain.MemberRole">
+    <Position X="13.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAhAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Member.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Domain.TicketSeverity">
+    <Position X="15.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Ticket.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Domain.VirtualMachineState">
+    <Position X="2.75" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAQAAAAAAAAAAAAAICAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>VirtualMachine.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

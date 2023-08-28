@@ -1,0 +1,29 @@
+@using global::Shared.Members;
+@page "/members"
+@attribute [Authorize]
+
+<MudDataGrid T="MemberDto.Index" Items="@_members" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
+    Hideable="true" RowClick="@RowClicked">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Leden</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <Column T="MemberDto.Index" Field="Name" Title="Naam" />
+        <Column T="MemberDto.Index" Field="Email" Title="E-mail" />
+        <!--<Column T="MemberDto.Index" Field="PhoneNumber" Title="Gsm" /> Deze property zit niet in MemderDto.Index -->
+        <Column T="MemberDto.Index" Field="Role" Title="Rol" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="MemberDto.Index" />
+    </PagerContent>
+</MudDataGrid>
+
+<AuthorizeView Roles="Admin">
+    <MudFab Class="floating-button" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@OnAdd" />
+</AuthorizeView>
+
+
+
