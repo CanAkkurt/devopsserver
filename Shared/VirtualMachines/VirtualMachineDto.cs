@@ -39,6 +39,7 @@ public abstract class VirtualMachineDto
         public string? RelationCustomerDescription { get; set; }
         public Dictionary<string, string>? Properties { get; set; }
 
+        public string Active { get; set; }
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? State { get; set; }

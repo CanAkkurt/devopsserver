@@ -75,6 +75,16 @@ public class VirtualMachineController : ControllerBase
     {
         return await _vmService.GetUsageAsync();
     }
+	[SwaggerOperation("Returns the tickets of a specific vm.")]
+	[Route("/api/virtualmachine/all")]
+	public List<String> getallinfo()
+    {
+       var list = new List<String>();
+        list.Add("test");
+        list.Add("oke");
+      
 
+        return list;
+    }
 }
 

@@ -73,6 +73,11 @@ public class VirtualMachineService : IVirtualMachineService
 			   MemoryInUse = x.MemoryAmountInUse,
 			   StorageInUse = x.StorageAmountInUse,
 			   Hostname = x.Hostname,
+               StartDate= x.StartDate,
+               EndDate= x.EndDate,
+               Active = x.Active,
+
+			   FysiekeServer = x.FysiekeServer,
 
 
 
@@ -280,6 +285,8 @@ public class VirtualMachineService : IVirtualMachineService
 
         return result;
     }
+
+   
 
 
 }

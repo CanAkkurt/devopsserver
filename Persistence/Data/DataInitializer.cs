@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Persistence.Data
 {
@@ -107,17 +108,45 @@ namespace Persistence.Data
 
         private static List<VirtualMachine> InitializeVMs(List<Project> projects, List<Customer> customers, List<Member> members)
         {
-            return new List<VirtualMachine>
+			var jsonData = new List<object>
+		{
+			new { month = "february", value = 5.0 },
+			new { month = "maart", value = 8.0 },
+			new { month = "april", value = 12.0 },
+			new { month = "mei", value = 7.0 },
+			new { month = "juni", value = 10.0 },
+			new { month = "juli", value = 6.0 },
+			new { month = "augustus", value = 2.0 }
+		};
+
+
+
+			var jsonData2 = new List<object>
+		{
+			new { month = "InUse", value = 9.0 },
+			new { month = "total Vm's", value = 20.0 },
+			new { month = "Idle", value = 3.0 },
+			new { month = "Stoped", value = 2.0 },
+		
+		};
+
+			//convert json to string
+
+			string jsonString = JsonConvert.SerializeObject(new { data = jsonData });
+			string jsonString2 = JsonConvert.SerializeObject(new { data = jsonData2 });
+
+			DateTime specificDate = new DateTime(2023, 9, 7);
+			return new List<VirtualMachine>
             {   
-                new VirtualMachine("VM One", projects[0], members[0],  Modus.IAAS ,customers[0], VirtualMachineState.Requested,  "vic", 3, 2, 128,2,1,40, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Two", projects[1], members[1], Modus.IAAS ,customers[0], VirtualMachineState.Accepted,  "project",   3, 4, 128,2,2,50, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Three", projects[2], members[1], Modus.IAAS ,customers[0], VirtualMachineState.Accepted, "google",  2, 4, 256,1,3,120, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Four", projects[3], members[1], Modus.IAAS ,customers[0], VirtualMachineState.Processing, "facebook", 2, 4, 256,1,3,130, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Five", projects[4], members[2], Modus.IAAS ,customers[1], VirtualMachineState.Denied, "",     2, 8, 512,1,5,320, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Six", projects[1], members[3], Modus.IAAS ,customers[1], VirtualMachineState.Processing, "",  4, 8, 512,3,7,300, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Seven", projects[1], members[4], Modus.IAAS ,customers[1], VirtualMachineState.Requested, "", 4, 16, 1024,3,8,500, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Eight", projects[0], members[0], Modus.IAAS ,customers[2], VirtualMachineState.Requested, "", 4, 16, 1024,4,16,1000, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
-                new VirtualMachine("VM Nine", projects[0], members[0], Modus.IAAS ,customers[1], VirtualMachineState.Processing, "", 4, 32, 1024,3,18,500, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", ""),
+                new VirtualMachine("VM One","Active", projects[0], members[0],  Modus.IAAS ,customers[0], VirtualMachineState.Requested,  "vic", 3, 2, 128,2,1,40, specificDate, specificDate.AddDays(7), "", true, jsonString, ""),
+                new VirtualMachine("VM Two","Active", projects[1], members[1], Modus.IAAS ,customers[0], VirtualMachineState.Accepted,  "project",   3, 4, 128,2,2,50,specificDate, specificDate, "", true, jsonString2, ""),
+                new VirtualMachine("VM Three","Active", projects[2], members[1], Modus.IAAS ,customers[0], VirtualMachineState.Accepted, "google",  2, 4, 256,1,3,120, DateTime.Now, DateTime.Now.AddDays(7), "", true, "null", ""),
+                new VirtualMachine("VM Four","Not Active", projects[3], members[1], Modus.IAAS ,customers[0], VirtualMachineState.Processing, "facebook", 2, 4, 256,1,3,130, DateTime.Now, DateTime.Now.AddDays(7), "", true, "null", ""),
+                new VirtualMachine("VM Five","Not Active", projects[4], members[2], Modus.IAAS ,customers[1], VirtualMachineState.Denied, "",     2, 8, 512,1,5,320, DateTime.Now, DateTime.Now.AddDays(7), "", true, "null", ""),
+                new VirtualMachine("VM Six","Active", projects[1], members[3], Modus.IAAS ,customers[1], VirtualMachineState.Processing, "",  4, 8, 512,3,7,300, DateTime.Now, DateTime.Now.AddDays(7), "", true, "", "null"),
+                new VirtualMachine("VM Seven","Not Active", projects[1], members[4], Modus.IAAS ,customers[1], VirtualMachineState.Requested, "", 4, 16, 1024,3,8,500, DateTime.Now, DateTime.Now.AddDays(7), "", true, "null", ""),
+                new VirtualMachine("VM Eight","Not Active" ,projects[0], members[0], Modus.IAAS ,customers[2], VirtualMachineState.Requested, "", 4, 16, 1024,4,16,1000, DateTime.Now, DateTime.Now.AddDays(7), "", true, "null", ""),
+                new VirtualMachine("VM Nine","Active", projects[0], members[0], Modus.IAAS ,customers[1], VirtualMachineState.Processing, "", 4, 32, 1024,3,18,500, DateTime.Now, DateTime.Now.AddDays(7), "", true, "null", ""),
             };
         }
 

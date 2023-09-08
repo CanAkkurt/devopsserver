@@ -19,7 +19,7 @@ public class VirtualMachine
     public int VCPUamount { get; set; }
     public double MemoryAmount { get; set; }
     public double StorageAmount { get; set; }
-
+    public string Active { get; set; }
 
 	public int VCPUamountInUse { get; set; }
 	public double MemoryAmountInUse { get; set; }
@@ -46,7 +46,7 @@ public class VirtualMachine
     {
     }
 
-    public VirtualMachine(string name, Project? project, Member creator, Modus modus, Customer customer, VirtualMachineState state, string hostname, int vCPUamount, double memoryAmount, double storageAmount,int vCPUamountInUse, double memoryAmountInUse,double storageAmountInUse,  DateTime startDate, DateTime endDate, string backupFrequency, bool highAvailability, string fysiekeServer, string? relationCustomerDescription)
+    public VirtualMachine(string name,String active, Project? project, Member creator, Modus modus, Customer customer, VirtualMachineState state, string hostname, int vCPUamount, double memoryAmount, double storageAmount,int vCPUamountInUse, double memoryAmountInUse,double storageAmountInUse,  DateTime startDate, DateTime endDate, string backupFrequency, bool highAvailability, string fysiekeServer, string? relationCustomerDescription)
     {
         Name = name;
         Project = project;
@@ -67,6 +67,7 @@ public class VirtualMachine
         HighAvailability = highAvailability;
         FysiekeServer = fysiekeServer;
         RelationCustomerDescription = relationCustomerDescription;
+        Active = active;
     }
 
     public VirtualMachine(string name, VirtualMachineState state, Modus modus, string hostname, string? fQDN, int vCPUamount, 
